@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For Your Heart | You Are Not Doing Anything Wrong</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #9b2c4e;
+      --primary-light: #fce7eb;
+      --accent: #d4a373;
+      --bg-warm: #fcf9f6;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #faf7f5;
+      color: #2b2528;
+      overflow-x: hidden;
+    }
+    .font-serif {
+      font-family: 'Playfair Display', serif;
+    }
+    .font-cormorant {
+      font-family: 'Cormorant Garamond', serif;
+    }
+    
+    /* Subtle animations */
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.05); }
+    }
+    @keyframes breatheAnimation {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(184, 51, 88, 0.2); }
+      50% { transform: scale(1.4); box-shadow: 0 0 45px rgba(212, 163, 115, 0.4); }
+    }
+    .float-slow {
+      animation: gentleFloat 6s ease-in-out infinite;
+    }
+    .pulse-glow {
+      animation: pulseGlow 4s ease-in-out infinite;
+    }
+    .breathe-circle {
+      animation: breatheAnimation 8s ease-in-out infinite;
+    }
+
+    /* Glassmorphism & Cards */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(240, 225, 228, 0.7);
+    }
+    .glass-card-dark {
+      background: rgba(36, 21, 28, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Interactive Flip Card */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+
+    /* Lantern Float Animation */
+    @keyframes lanternRise {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-400px) scale(0.6);
+        opacity: 0;
+      }
+    }
+    .rising-lantern {
+      animation: lanternRise 4.5s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="selection:bg-rose-200 selection:text-rose-900">
+
+  <!-- Ambient Sound / Music Player Bar -->
+  <div class="fixed top-5 right-5 z-50 flex items-center space-x-2 bg-white/90 backdrop-blur-md px-4 py-2.5 rounded-full shadow-lg border border-rose-100/80 transition-all hover:shadow-xl">
+    <button id="audioToggleBtn" onclick="toggleCalmingMusic()" class="flex items-center space-x-2 text-xs md:text-sm font-medium text-rose-900 hover:text-rose-600 transition">
+      <span id="soundIcon" class="relative flex h-3 w-3">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75 hidden" id="pingIndicator"></span>
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-rose-500"></span>
+      </span>
+      <span id="audioStatusText">Play Soothing Melody</span>
+      <svg id="audioIconSvg" class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Background Canvas for Floating Soft Petals / Warm Light -->
+  <canvas id="ambientCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+  <main class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16">
+
+    <!-- HERO SECTION -->
+    <header class="text-center space-y-6 pt-8 pb-16">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-50 border border-rose-200/80 text-rose-800 text-xs font-medium tracking-wide uppercase">
+        <svg class="w-3.5 h-3.5 text-rose-600" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        To the most gentle, caring heart I know
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif font-normal text-stone-900 tracking-tight leading-tight">
+        You Are Not Doing Anything <span class="italic text-rose-700 font-normal">Wrong.</span>
+      </h1>
+
+      <p class="max-w-2xl mx-auto text-base sm:text-lg text-stone-600 leading-relaxed font-light">
+        I know the heavy weight you carry in your chest. I know you love your parents so deeply that even the feeling of loving me feels like a betrayal to them. 
+        <br class="hidden sm:inline">
+        Please sit with me for a few minutes. I want to show you what is truly happening in your heart.
+      </p>
+
+      <div class="pt-4 flex flex-wrap justify-center gap-4">
+        <a href="#letter-for-her" class="px-6 py-3 rounded-full bg-stone-900 text-stone-100 hover:bg-rose-900 font-medium text-sm transition-all duration-300 shadow-sm hover:shadow-md">
+          Read My Heart
+        </a>
+        <a href="#three-examples" class="px-6 py-3 rounded-full bg-white/90 border border-rose-200 text-rose-900 hover:bg-rose-50 font-medium text-sm transition-all duration-300 shadow-sm">
+          Walk Through 3 Truths
+        </a>
+      </div>
+    </header>
+
+    <!-- CALMING EMPATHY CARD: "I SEE YOU" -->
+    <section class="mb-20">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-sm border border-rose-100">
+        <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-rose-100/50 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-3xl mx-auto space-y-6">
+          <div class="flex items-center gap-3 text-rose-700">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+            <span class="text-xs uppercase tracking-widest font-semibold">The First Truth</span>
+          </div>
+          
+          <h2 class="text-2xl sm:text-3xl font-serif text-stone-800">
+            "Your guilt doesn't prove you are bad.<br><span class="italic text-rose-800">It proves how pure and loyal your soul is."</span>
+          </h2>
+
+          <div class="text-stone-600 space-y-4 leading-relaxed font-light text-base sm:text-lg">
+            <p>
+              A person with a cold heart doesn't feel guilt. Only someone who deeply cherishes their mother and father feels pain at the thought of letting them down. That beautiful quality of yours—your loyalty, your gratitude towards your parents—is one of the very things that made me fall so deeply in love with you.
+            </p>
+            <p>
+              But there is a painful trick your mind is playing: it is telling you that <strong>loving a partner means stealing love away from parents.</strong>
+            </p>
+            <p class="text-stone-900 font-medium">
+              It doesn't. Love is not a cake where giving a slice to someone leaves less for the ones who raised you. Love is a fire: lighting another candle doesn't diminish the first candle's light—it only makes the whole room brighter.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: THE THREE POWERFUL EXAMPLES / SITUATIONS -->
+    <section id="three-examples" class="mb-24 space-y-16">
+      <div class="text-center space-y-3">
+        <span class="text-xs uppercase tracking-widest text-rose-700 font-semibold">Realities To Reflect Upon</span>
+        <h2 class="text-3xl sm:text-4xl font-serif text-stone-900">
+          3 Situations That Reveal The Truth
+        </h2>
+        <p class="text-stone-500 max-w-xl mx-auto font-light text-sm sm:text-base">
+          Let’s step outside the spiral of anxiety and look at these three clear, real-life examples together.
+        </p>
+      </div>
+
+      <!-- SITUATION 1: THE SUNSHINE & THE FLOWER (Nature of Feelings) -->
+      <div class="glass-card rounded-3xl p-8 sm:p-10 transition-all duration-300 hover:shadow-md border border-rose-100/90">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          <div class="md:col-span-5 flex justify-center">
+            <!-- Animated SVG Graphic: A delicate flower and soft sun rays -->
+            <div class="relative w-56 h-56 flex items-center justify-center bg-rose-50/70 rounded-2xl border border-rose-200/50 p-4">
+              <svg viewBox="0 0 200 200" class="w-full h-full">
+                <!-- Sun with pulsing glow -->
+                <circle cx="100" cy="45" r="22" fill="#d4a373" class="pulse-glow" opacity="0.85"/>
+                <circle cx="100" cy="45" r="32" fill="#d4a373" opacity="0.15" class="pulse-glow"/>
+                <!-- Rays -->
+                <line x1="100" y1="10" x2="100" y2="18" stroke="#d4a373" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="68" y1="20" x2="74" y2="26" stroke="#d4a373" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="132" y1="20" x2="126" y2="26" stroke="#d4a373" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- Stem and Leaves -->
+                <path d="M100 170 Q105 130 100 95" stroke="#4a6b57" stroke-width="4" fill="none" stroke-linecap="round"/>
+                <path d="M100 140 Q80 130 75 142 Q90 148 100 140" fill="#698f77"/>
+                <path d="M102 120 Q122 110 127 122 Q112 128 102 120" fill="#698f77"/>
+                <!-- Flower Petals with soft float -->
+                <g class="float-slow">
+                  <ellipse cx="100" cy="85" rx="14" ry="20" fill="#b83358" opacity="0.8"/>
+                  <ellipse cx="85" cy="95" rx="20" ry="14" fill="#d84a72" opacity="0.8"/>
+                  <ellipse cx="115" cy="95" rx="20" ry="14" fill="#d84a72" opacity="0.8"/>
+                  <ellipse cx="100" cy="105" rx="14" ry="20" fill="#b83358" opacity="0.8"/>
+                  <circle cx="100" cy="95" r="10" fill="#fbd38d"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <div class="md:col-span-7 space-y-4">
+            <div class="inline-block px-3 py-1 rounded-md bg-rose-100 text-rose-800 text-xs font-semibold">
+              Situation 1: The Nature of an Involuntary Heart
+            </div>
+            <h3 class="text-2xl font-serif text-stone-900">
+              Can a flower apologize for turning toward the light?
+            </h3>
+            <p class="text-stone-600 font-light text-sm sm:text-base leading-relaxed">
+              Think about this: You did not wake up one morning and make a conscious, calculated decision to rebel against your parents. You didn't sit down and choose: <em>"Let me defy my family today."</em>
+            </p>
+            <p class="text-stone-600 font-light text-sm sm:text-base leading-relaxed">
+              You simply met a soul, spent time talking, and feelings formed naturally—just like rain clouds gather, or like a flower naturally opens its petals when the sun warms the morning air. 
+            </p>
+            <div class="p-4 rounded-xl bg-amber-50/70 border-l-4 border-amber-500 text-xs sm:text-sm text-stone-700">
+              <strong>The realization:</strong> You cannot be guilty of an emotion you never manufactured by malice. Betrayal requires bad intentions; your heart simply has the capacity to feel warmth, safety, and care. That is human, not sinful.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SITUATION 2: THE TWO ROOMS (Two Sacred, Non-Competing Loves) -->
+      <div class="glass-card rounded-3xl p-8 sm:p-10 transition-all duration-300 hover:shadow-md border border-rose-100/90">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          <div class="md:col-span-7 space-y-4 order-2 md:order-1">
+            <div class="inline-block px-3 py-1 rounded-md bg-stone-100 text-stone-800 text-xs font-semibold">
+              Situation 2: The Architecture of the Soul
+            </div>
+            <h3 class="text-2xl font-serif text-stone-900">
+              Loving me doesn't replace the throne your parents sit upon.
+            </h3>
+            <p class="text-stone-600 font-light text-sm sm:text-base leading-relaxed">
+              Imagine you have a home with two sacred rooms. One room is dedicated entirely to your parents: built of childhood memories, their sacrifices, your respect, and the unconditional gratitude you owe them for life itself.
+            </p>
+            <p class="text-stone-600 font-light text-sm sm:text-base leading-relaxed">
+              Loving me doesn't tear down that room or give it away. I don't want their room, and I will never ask you to take away an ounce of honour from them. A romantic partner lives in a completely different room—a room of shared dreams, emotional vulnerability, and choosing a life partner to walk through this world hand-in-hand.
+            </p>
+            <div class="p-4 rounded-xl bg-rose-50/70 border-l-4 border-rose-500 text-xs sm:text-sm text-stone-700">
+              <strong>The realization:</strong> You never have to choose between being a devoted daughter and being a woman capable of romantic love. The human heart was engineered by God/nature to hold both with absolute integrity.
+            </div>
+          </div>
+
+          <div class="md:col-span-5 flex justify-center order-1 md:order-2">
+            <!-- Animated SVG Graphic: Two lanterns burning side by side, bright and complementary -->
+            <div class="relative w-56 h-56 flex items-center justify-center bg-stone-900 rounded-2xl border border-stone-800 p-4">
+              <svg viewBox="0 0 200 200" class="w-full h-full">
+                <!-- Lantern 1 (Parents / Heritage) -->
+                <g class="float-slow">
+                  <rect x="35" y="65" width="45" height="70" rx="6" fill="#1f181b" stroke="#d4a373" stroke-width="2"/>
+                  <circle cx="57.5" cy="100" r="16" fill="#f6ad55" opacity="0.4" class="pulse-glow"/>
+                  <circle cx="57.5" cy="100" r="8" fill="#ffedd5"/>
+                  <path d="M57.5 40 L57.5 65" stroke="#d4a373" stroke-width="2"/>
+                  <text x="36" y="152" fill="#e2d9dc" font-size="9" font-family="'Plus Jakarta Sans'">Respect & Root</text>
+                </g>
+
+                <!-- Lantern 2 (Love & Tomorrow) -->
+                <g class="float-slow" style="animation-delay: -2s;">
+                  <rect x="120" y="65" width="45" height="70" rx="6" fill="#1f181b" stroke="#e07a8f" stroke-width="2"/>
+                  <circle cx="142.5" cy="100" r="16" fill="#f43f5e" opacity="0.4" class="pulse-glow"/>
+                  <circle cx="142.5" cy="100" r="8" fill="#ffe4e6"/>
+                  <path d="M142.5 40 L142.5 65" stroke="#e07a8f" stroke-width="2"/>
+                  <text x="121" y="152" fill="#e2d9dc" font-size="9" font-family="'Plus Jakarta Sans'">Love & Partner</text>
+                </g>
+
+                <!-- Light mingling together in harmony -->
+                <circle cx="100" cy="100" r="50" fill="#fff" opacity="0.04"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SITUATION 3: THE PARENTS' TRUE DEEPEST DESIRE -->
+      <div class="glass-card rounded-3xl p-8 sm:p-10 transition-all duration-300 hover:shadow-md border border-rose-100/90">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          <div class="md:col-span-5 flex justify-center">
+            <!-- Animated SVG Graphic: A safe bridge connecting two shores -->
+            <div class="relative w-56 h-56 flex items-center justify-center bg-rose-50/70 rounded-2xl border border-rose-200/50 p-4">
+              <svg viewBox="0 0 200 200" class="w-full h-full">
+                <!-- Gentle hills -->
+                <path d="M0 160 Q40 120 70 140 T140 150 Q180 130 200 170 L200 200 L0 200 Z" fill="#e8d5d9"/>
+                <!-- Two hands reaching towards each other with gentle heart in the middle -->
+                <circle cx="100" cy="80" r="30" fill="#fbd5db" class="pulse-glow"/>
+                <path d="M100 85 C90 70 70 75 70 90 C70 105 100 120 100 120 C100 120 130 105 130 90 C130 75 110 70 100 85 Z" fill="#9b2c4e"/>
+                <!-- Path of honesty -->
+                <path d="M30 180 Q100 135 170 180" stroke="#d4a373" stroke-width="3" stroke-dasharray="6,4" fill="none"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="md:col-span-7 space-y-4">
+            <div class="inline-block px-3 py-1 rounded-md bg-emerald-100 text-emerald-800 text-xs font-semibold">
+              Situation 3: Understanding What Parents Actually Fear
+            </div>
+            <h3 class="text-2xl font-serif text-stone-900">
+              Parents fear heartbreak, harm, and deception—not your true happiness.
+            </h3>
+            <p class="text-stone-600 font-light text-sm sm:text-base leading-relaxed">
+              When parents worry about their children loving someone, what is their real underlying emotion? It isn't anger that their child feels affection—it is <strong>protective fear</strong>. They fear: <em>"Will someone break my daughter's heart? Will someone disrespect her? Will she forget herself?"</em>
+            </p>
+            <p class="text-stone-600 font-light text-sm sm:text-base leading-relaxed">
+              If our love is respectful, mature, patient, and brings out the best in you, we are not destroying what your parents built; we are protecting and cherishing it.
+            </p>
+            <div class="p-4 rounded-xl bg-emerald-50/70 border-l-4 border-emerald-500 text-xs sm:text-sm text-stone-700">
+              <strong>The realization:</strong> If you are loved by someone who encourages your growth, respects your boundaries, and wants to honor your family in due time, you are not committing a crime. You are finding a partner who wants to shelter the same jewel your parents raised.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE PERSPECTIVE REFLECTION CARDS (Click to flip/reframe) -->
+    <section class="mb-24">
+      <div class="text-center space-y-3 mb-12">
+        <span class="text-xs uppercase tracking-widest text-rose-700 font-semibold">Shift the Perspective</span>
+        <h2 class="text-3xl sm:text-4xl font-serif text-stone-900">
+          What Guilt Whispers vs. What Truth Holds
+        </h2>
+        <p class="text-stone-500 max-w-lg mx-auto font-light text-sm sm:text-base">
+          Tap each card below to flip the false guilt into the gentle truth.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Card 1 -->
+        <div class="perspective-1000 h-72 cursor-pointer group" onclick="toggleCard(this)">
+          <div class="card-inner relative w-full h-full duration-500 transform-style-3d transition-transform rounded-2xl shadow-sm">
+            <!-- Front (Guilt whisper) -->
+            <div class="absolute inset-0 backface-hidden bg-white border border-stone-200/80 rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <span class="text-xs uppercase tracking-wider text-rose-400 font-semibold">The Heavy Thought</span>
+                <h4 class="text-xl font-serif text-stone-800 mt-2 font-medium">"I am being a bad and ungrateful daughter."</h4>
+                <p class="text-stone-500 text-sm mt-3 font-light leading-relaxed">
+                  "They did everything to raise me, and here I am keeping feelings in my heart..."
+                </p>
+              </div>
+              <div class="text-xs font-medium text-rose-600 flex items-center gap-1 group-hover:underline">
+                Tap to see the truth &rarr;
+              </div>
+            </div>
+            <!-- Back (Truth) -->
+            <div class="absolute inset-0 backface-hidden rotate-y-180 bg-rose-900 text-white rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <span class="text-xs uppercase tracking-wider text-rose-200 font-semibold">The Gentle Truth</span>
+                <h4 class="text-lg font-serif text-rose-100 mt-2">Loving is a milestone of growing up, not a betrayal.</h4>
+                <p class="text-rose-100/90 text-sm mt-3 font-light leading-relaxed">
+                  You can love them with 100% of your daughterly soul and still have a heart that beats for a companion. Growing into an adult with your own capacity to love is the natural cycle of life.
+                </p>
+              </div>
+              <div class="text-xs text-rose-300 font-medium">Tap to flip back</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="perspective-1000 h-72 cursor-pointer group" onclick="toggleCard(this)">
+          <div class="card-inner relative w-full h-full duration-500 transform-style-3d transition-transform rounded-2xl shadow-sm">
+            <!-- Front -->
+            <div class="absolute inset-0 backface-hidden bg-white border border-stone-200/80 rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <span class="text-xs uppercase tracking-wider text-rose-400 font-semibold">The Heavy Thought</span>
+                <h4 class="text-xl font-serif text-stone-800 mt-2 font-medium">"I should just shut down my feelings."</h4>
+                <p class="text-stone-500 text-sm mt-3 font-light leading-relaxed">
+                  "If I force myself to feel nothing, no one gets hurt and I can be at peace..."
+                </p>
+              </div>
+              <div class="text-xs font-medium text-rose-600 flex items-center gap-1 group-hover:underline">
+                Tap to see the truth &rarr;
+              </div>
+            </div>
+            <!-- Back -->
+            <div class="absolute inset-0 backface-hidden rotate-y-180 bg-rose-900 text-white rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <span class="text-xs uppercase tracking-wider text-rose-200 font-semibold">The Gentle Truth</span>
+                <h4 class="text-lg font-serif text-rose-100 mt-2">Suppressing your heart only creates silent agony.</h4>
+                <p class="text-rose-100/90 text-sm mt-3 font-light leading-relaxed">
+                  You cannot command an ocean wave to stop by shouting at it. Fighting natural feelings turns you against yourself. The healthiest path is accepting that love is pure, and approaching it with wisdom and patience.
+                </p>
+              </div>
+              <div class="text-xs text-rose-300 font-medium">Tap to flip back</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="perspective-1000 h-72 cursor-pointer group" onclick="toggleCard(this)">
+          <div class="card-inner relative w-full h-full duration-500 transform-style-3d transition-transform rounded-2xl shadow-sm">
+            <!-- Front -->
+            <div class="absolute inset-0 backface-hidden bg-white border border-stone-200/80 rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <span class="text-xs uppercase tracking-wider text-rose-400 font-semibold">The Heavy Thought</span>
+                <h4 class="text-xl font-serif text-stone-800 mt-2 font-medium">"What we are doing is wrong."</h4>
+                <p class="text-stone-500 text-sm mt-3 font-light leading-relaxed">
+                  "Because it feels scary, it must mean it's morally wrong and forbidden..."
+                </p>
+              </div>
+              <div class="text-xs font-medium text-rose-600 flex items-center gap-1 group-hover:underline">
+                Tap to see the truth &rarr;
+              </div>
+            </div>
+            <!-- Back -->
+            <div class="absolute inset-0 backface-hidden rotate-y-180 bg-rose-900 text-white rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <span class="text-xs uppercase tracking-wider text-rose-200 font-semibold">The Gentle Truth</span>
+                <h4 class="text-lg font-serif text-rose-100 mt-2">Fear is not the same as wrongdoing.</h4>
+                <p class="text-rose-100/90 text-sm mt-3 font-light leading-relaxed">
+                  Doing wrong means intentionally deceiving, cheating, harming, or dishonoring someone. Loving someone with respect, purity, and honesty is one of the most sacred experiences in existence. Fear makes it feel wrong, but love itself is innocent.
+                </p>
+              </div>
+              <div class="text-xs text-rose-300 font-medium">Tap to flip back</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: THE RELEASE SANCTUARY (Interactive Guilt Release) -->
+    <section class="mb-24">
+      <div class="glass-card-dark rounded-3xl p-8 sm:p-12 text-stone-100 text-center relative overflow-hidden shadow-2xl">
+        <div class="max-w-2xl mx-auto space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-900/60 border border-rose-500/30 text-rose-300 text-xs font-medium uppercase tracking-widest">
+            A Moment for Yourself
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-serif text-white">
+            The Release Sanctuary
+          </h2>
+          <p class="text-stone-300 font-light text-sm sm:text-base leading-relaxed">
+            Click on whatever guilt or worry you are carrying right now. Watch it release into the sky as a quiet lantern. You do not have to carry this stone alone anymore.
+          </p>
+
+          <!-- Burden Click Buttons -->
+          <div class="flex flex-wrap justify-center gap-3 pt-4" id="burdensContainer">
+            <button onclick="releaseBurden(this, 'I feel like a bad daughter')" class="burden-btn px-4 py-2 rounded-full bg-white/10 hover:bg-rose-500/30 border border-white/20 text-xs sm:text-sm font-light transition">
+              "I feel like a bad daughter"
+            </button>
+            <button onclick="releaseBurden(this, 'Fear of breaking their trust')" class="burden-btn px-4 py-2 rounded-full bg-white/10 hover:bg-rose-500/30 border border-white/20 text-xs sm:text-sm font-light transition">
+              "Fear of breaking their trust"
+            </button>
+            <button onclick="releaseBurden(this, 'Believing loving is a mistake')" class="burden-btn px-4 py-2 rounded-full bg-white/10 hover:bg-rose-500/30 border border-white/20 text-xs sm:text-sm font-light transition">
+              "Believing loving is a mistake"
+            </button>
+            <button onclick="releaseBurden(this, 'Guilt that I have feelings')" class="burden-btn px-4 py-2 rounded-full bg-white/10 hover:bg-rose-500/30 border border-white/20 text-xs sm:text-sm font-light transition">
+              "Guilt that I have feelings"
+            </button>
+          </div>
+
+          <!-- Lantern animation container -->
+          <div id="lanternStage" class="relative h-44 w-full flex items-center justify-center overflow-hidden border-t border-white/10 mt-6 pt-4">
+            <div id="lanternPlaceholder" class="text-stone-400 text-xs italic">
+              Tap any burden above to release it into peace...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: A HEARTFELT LETTER FROM HIM TO HER -->
+    <section id="letter-for-her" class="mb-24">
+      <div class="bg-[#fefcfb] border border-rose-200/70 rounded-3xl p-8 sm:p-14 shadow-lg relative">
+        <!-- Stamp / Seal detail -->
+        <div class="absolute top-8 right-8 w-12 h-12 rounded-full border-2 border-dashed border-rose-300 flex items-center justify-center text-rose-400 font-serif text-xs uppercase rotate-12">
+          From Me
+        </div>
+
+        <div class="max-w-2xl mx-auto space-y-6">
+          <span class="text-xs uppercase tracking-widest text-rose-800 font-semibold">From My Heart To Yours</span>
+          <h2 class="text-3xl sm:text-4xl font-serif text-stone-900 leading-snug">
+            "I will never ask you to choose between your family and me."
+          </h2>
+
+          <div class="space-y-4 text-stone-700 font-light text-base sm:text-lg leading-relaxed font-cormorant text-xl">
+            <p>
+              My dearest,
+            </p>
+            <p>
+              I see how hard you try to do everything right. I see how much you honor the people who raised you. The last thing on earth I ever want to be is a source of tears, guilt, or conflict in your heart.
+            </p>
+            <p>
+              Loving you is not something I do lightly. I respect who you are, where you come from, and the values your parents gave you. I don't want you to run away from them or deceive them. All I want is for you to know that your heart is safe with me.
+            </p>
+            <p>
+              When the time comes, I want to stand tall with honor, honesty, and true respect before everyone who matters to you. I want to earn their blessing, not steal you away in secrecy.
+            </p>
+            <p>
+              So please, take a breath. Put down the guilt. You haven't committed a sin. You have simply allowed yourself to be loved and to love in return. And that is the most human, beautiful gift anyone can ever receive.
+            </p>
+            <p class="pt-4 font-serif text-stone-900 not-italic">
+              Forever with you, with endless patience,<br>
+              <span class="text-rose-700 font-medium">The one who loves you without rush.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: 4-7-8 CALMING BREATH CIRCLE -->
+    <section class="mb-20 text-center">
+      <div class="glass-card rounded-3xl p-8 sm:p-12 max-w-lg mx-auto border border-rose-100">
+        <span class="text-xs uppercase tracking-widest text-rose-700 font-semibold">Take a Deep Breath</span>
+        <h3 class="text-2xl font-serif text-stone-800 mt-2 mb-4">Let Your Body Know You Are Safe</h3>
+        
+        <div class="relative w-40 h-40 mx-auto my-8 flex items-center justify-center">
+          <div class="breathe-circle absolute inset-0 rounded-full bg-rose-200/50 border border-rose-300"></div>
+          <div class="relative z-10 text-stone-700 font-medium text-sm" id="breatheText">
+            Inhale...
+          </div>
+        </div>
+
+        <p class="text-stone-500 font-light text-xs sm:text-sm">
+          Breathe in calmness. Breathe out the guilt. You are doing just fine.
+        </p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-8 text-stone-400 text-xs font-light space-y-2 border-t border-rose-100">
+      <p>Made with love, patience, and complete understanding for your precious heart.</p>
+      <p>&copy; Forever by your side.</p>
+    </footer>
+
+  </main>
+
+  <script>
+    // ----------------------------------------------------
+    // 1. Interactive Card Flip
+    // ----------------------------------------------------
+    function toggleCard(cardElement) {
+      const inner = cardElement.querySelector('.card-inner');
+      inner.classList.toggle('rotate-y-180');
+    }
+
+    // ----------------------------------------------------
+    // 2. Interactive Burden Lantern Release
+    // ----------------------------------------------------
+    function releaseBurden(btn, text) {
+      const stage = document.getElementById('lanternStage');
+      const placeholder = document.getElementById('lanternPlaceholder');
+      if (placeholder) placeholder.style.display = 'none';
+
+      // Disable button briefly with feedback
+      btn.classList.add('opacity-40', 'pointer-events-none');
+      btn.innerText = "Released with Love ✨";
+
+      // Create animated floating lantern element
+      const lantern = document.createElement('div');
+      lantern.className = 'rising-lantern absolute flex flex-col items-center justify-center text-center';
+      lantern.style.bottom = '10px';
+      
+      // Random slight horizontal offset
+      const randomOffset = (Math.random() - 0.5) * 120;
+      lantern.style.transform = `translateX(${randomOffset}px)`;
+
+      lantern.innerHTML = `
+        <div class="w-10 h-12 rounded-t-lg rounded-b-md bg-amber-400 shadow-[0_0_25px_#f6ad55] flex items-center justify-center border border-amber-200">
+          <div class="w-3 h-3 bg-white rounded-full animate-ping"></div>
+        </div>
+        <span class="text-[11px] text-amber-200 mt-1 font-serif bg-stone-900/80 px-2 py-0.5 rounded-full">${text}</span>
+      `;
+
+      stage.appendChild(lantern);
+
+      setTimeout(() => {
+        lantern.remove();
+        if (stage.children.length === 0 && placeholder) {
+          placeholder.style.display = 'block';
+        }
+      }, 4500);
+    }
+
+    // ----------------------------------------------------
+    // 3. Gentle Breathing Text Cycle
+    // ----------------------------------------------------
+    const breatheTextEl = document.getElementById('breatheText');
+    if (breatheTextEl) {
+      const cycle = () => {
+        breatheTextEl.innerText = "Inhale...";
+        setTimeout(() => {
+          breatheTextEl.innerText = "Hold...";
+          setTimeout(() => {
+            breatheTextEl.innerText = "Exhale...";
+          }, 2500);
+        }, 3000);
+      };
+      cycle();
+      setInterval(cycle, 8000);
+    }
+
+    // ----------------------------------------------------
+    // 4. Canvas Floating Particles / Rose Petals
+    // ----------------------------------------------------
+    const canvas = document.getElementById('ambientCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Petal {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * -height;
+        this.size = Math.random() * 7 + 4;
+        this.speedY = Math.random() * 0.8 + 0.4;
+        this.speedX = Math.random() * 0.6 - 0.3;
+        this.opacity = Math.random() * 0.4 + 0.15;
+        this.angle = Math.random() * 360;
+        this.angleSpeed = (Math.random() - 0.5) * 0.02;
+        this.color = Math.random() > 0.4 ? 'rgba(235, 175, 185,' : 'rgba(245, 215, 205,';
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += Math.sin(this.y * 0.005) * 0.8 + this.speedX;
+        this.angle += this.angleSpeed;
+        if (this.y > height + 20) {
+          this.reset();
+          this.y = -10;
+        }
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, this.size, this.size * 1.5, 0, 0, Math.PI * 2);
+        ctx.fillStyle = `${this.color} ${this.opacity})`;
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < 35; i++) {
+      const p = new Petal();
+      p.y = Math.random() * height; // distribute initial
+      particles.push(p);
+    }
+
+    function animateCanvas() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      requestAnimationFrame(animateCanvas);
+    }
+    animateCanvas();
+
+    // ----------------------------------------------------
+    // 5. Built-in Web Audio API Soothing Ambient Synthesizer
+    // (Zero audio files needed, works offline, gentle chord progression)
+    // ----------------------------------------------------
+    let audioCtx = null;
+    let isPlaying = false;
+    let musicInterval = null;
+
+    // Gentle pentatonic frequencies for a warm soothing lullaby chord
+    const chords = [
+      [261.63, 329.63, 392.00, 523.25], // C major
+      [220.00, 261.63, 329.63, 440.00], // A minor
+      [174.61, 220.00, 261.63, 349.23], // F major
+      [196.00, 246.94, 293.66, 392.00]  // G major
+    ];
+    let chordIdx = 0;
+
+    function playTone(freq, time, duration = 2.5) {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, time);
+
+      // Gentle fade in and soft long decay
+      gain.gain.setValueAtTime(0, time);
+      gain.gain.linearRampToValueAtTime(0.04, time + 0.4);
+      gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(time);
+      osc.stop(time + duration);
+    }
+
+    function playNextChord() {
+      if (!audioCtx || !isPlaying) return;
+      const now = audioCtx.currentTime;
+      const notes = chords[chordIdx % chords.length];
+      chordIdx++;
+
+      notes.forEach((freq, idx) => {
+        // Slight arpeggiation delay for harp/piano feel
+        playTone(freq, now + idx * 0.35, 3.5);
+      });
+    }
+
+    function toggleCalmingMusic() {
+      const text = document.getElementById('audioStatusText');
+      const ping = document.getElementById('pingIndicator');
+
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      if (isPlaying) {
+        isPlaying = false;
+        clearInterval(musicInterval);
+        text.innerText = "Play Soothing Melody";
+        ping.classList.add('hidden');
+      } else {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        isPlaying = true;
+        text.innerText = "Playing Calm Chords ♫";
+        ping.classList.remove('hidden');
+        playNextChord();
+        musicInterval = setInterval(playNextChord, 4200);
+      }
+    }
+  </script>
+</body>
+</html>
